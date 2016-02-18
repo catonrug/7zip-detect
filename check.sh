@@ -290,6 +290,8 @@ if [ $lines -gt 0 ]; then
 echo change log found:
 echo
 cat $tmp/change.log
+echo
+
 echo "$filename">> $db
 echo "$version">> $db
 echo "$md5">> $db
