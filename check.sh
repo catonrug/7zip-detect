@@ -272,9 +272,20 @@ esac
 #detect version
 version=$(pestr $tmp/$file | grep -m1 -A1 "ProductVersion" | grep -v "ProductVersion")
 
+#check if version matchs version pattern
 echo $version | grep "^[0-9]\+[\., ]\+[0-9]\+"
 if [ $? -eq 0 ]; then
 echo
+
+#detect change log
+wget -qO- "$changes" | grep -A99 "^$version  " | grep -m2 -B99 "\-\-\-\-\-" | head -n -4 > $tmp/change.log
+
+#check if even something has been created
+if [ -f $tmp/change.log ]; then
+
+#calculate how many lines log file contains
+lines=$(cat $tmp/change.log | wc -l)
+if [ $lines -gt 0 ]; then
 
 echo creating md5 checksum of file..
 md5=$(md5sum $tmp/$filename | sed "s/\s.*//g")
@@ -284,6 +295,16 @@ echo creating sha1 checksum of file..
 sha1=$(sha1sum $tmp/$filename | sed "s/\s.*//g")
 echo
 
+#if google drive config exists then upload and delete file:
+if [ -f "../gd/$appname.cfg" ]
+then
+echo Uploading $filename to Google Drive..
+echo Make sure you have created \"$appname\" direcotry inside it!
+../uploader.py "../gd/$appname.cfg" "$tmp/$filename"
+echo
+fi
+
+#addititonal words in email subject. sequence is important
 case "$filename" in
 *x64.exe)
 bit=$(echo "(64-bit)")
@@ -305,9 +326,35 @@ printf %s "$emails" | while IFS= read -r onemail
 do {
 python ../send-email.py "$onemail" "$name $version $bit" "$url 
 $md5
-$sha1"
+$sha1
+
+`cat $tmp/change.log`"
 } done
 echo
+
+else
+#changes.log file has created but changes is mission
+echo changes.log file has created but changes is mission
+emails=$(cat ../maintenance | sed '$aend of file')
+printf %s "$emails" | while IFS= read -r onemail
+do {
+python ../send-email.py "$onemail" "To Do List" "changes.log file has created but changes is mission: 
+$version 
+$changes "
+} done
+fi
+
+else
+#changes.log has not been created
+echo changes.log has not been created
+emails=$(cat ../maintenance | sed '$aend of file')
+printf %s "$emails" | while IFS= read -r onemail
+do {
+python ../send-email.py "$onemail" "To Do List" "changes.log has not been created: 
+$version 
+$changes "
+} done
+fi
 
 else
 #version do not match version pattern
