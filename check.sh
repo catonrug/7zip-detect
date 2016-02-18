@@ -287,6 +287,15 @@ if [ -f $tmp/change.log ]; then
 lines=$(cat $tmp/change.log | wc -l)
 if [ $lines -gt 0 ]; then
 
+echo change log found:
+echo
+cat $tmp/change.log
+echo "$filename">> $db
+echo "$version">> $db
+echo "$md5">> $db
+echo "$sha1">> $db
+echo >> $db
+
 echo creating md5 checksum of file..
 md5=$(md5sum $tmp/$filename | sed "s/\s.*//g")
 echo
