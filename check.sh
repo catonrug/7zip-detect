@@ -292,12 +292,6 @@ echo
 cat $tmp/change.log
 echo
 
-echo "$filename">> $db
-echo "$version">> $db
-echo "$md5">> $db
-echo "$sha1">> $db
-echo >> $db
-
 echo creating md5 checksum of file..
 md5=$(md5sum $tmp/$filename | sed "s/\s.*//g")
 echo
@@ -305,6 +299,12 @@ echo
 echo creating sha1 checksum of file..
 sha1=$(sha1sum $tmp/$filename | sed "s/\s.*//g")
 echo
+
+echo "$filename">> $db
+echo "$version">> $db
+echo "$md5">> $db
+echo "$sha1">> $db
+echo >> $db
 
 #if google drive config exists then upload and delete file:
 if [ -f "../gd/$appname.cfg" ]
