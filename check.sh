@@ -235,8 +235,8 @@ if [ $? -eq 0 ]; then
 #get all exe and msi installers execpt ia64 and arm
 filelist=$(wget -qO- "$download" | sed "s/\d034/\n/g" | grep "exe$\|msi$" | grep -v "ia64\|arm" | sed "s/^/http:\/\/www\.7-zip\.org\//" | sed '$alast line')
 
-#count how many links are in download page
-links=$(echo "$filelist" | wc -l)
+#count how many links are in download page. substarct one fake last line from array
+links=$(echo "$filelist" | head -n -1 | wc -l)
 if [ $links -gt 3 ]; then
 echo $links download links found
 
