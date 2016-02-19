@@ -401,8 +401,8 @@ fi
 
 
 else
-#file is already in database
-echo file is already in database
+#$filename is already in database
+echo $filename is already in database
 fi
 
 rm -rf $tmp/*
