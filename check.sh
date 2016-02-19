@@ -239,6 +239,7 @@ filelist=$(wget -qO- "$download" | sed "s/\d034/\n/g" | grep "exe$\|msi$" | grep
 links=$(echo "$filelist" | head -n -1 | wc -l)
 if [ $links -gt 3 ]; then
 echo $links download links found
+echo
 
 printf %s "$filelist" | while IFS= read -r url
 do {
