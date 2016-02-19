@@ -237,7 +237,7 @@ filelist=$(wget -qO- "$download" | sed "s/\d034/\n/g" | grep "exe$\|msi$" | grep
 
 #count how many links are in download page
 links=$(echo "$filelist" | wc -l)
-if [ $links -gt 1 ]; then
+if [ $links -gt 3 ]; then
 echo $links download links found
 
 printf %s "$filelist" | while IFS= read -r url
