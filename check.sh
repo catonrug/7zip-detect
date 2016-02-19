@@ -235,8 +235,9 @@ if [ $? -eq 0 ]; then
 #get all exe and msi installers execpt ia64 and arm
 filelist=$(wget -qO- "$download" | sed "s/\d034/\n/g" | grep "exe$\|msi$" | grep -v "ia64\|arm" | sed "s/^/http:\/\/www\.7-zip\.org\//" | sed '$alast line')
 
+#count how many links are in download page
 links=$(echo "$filelist" | wc -l)
-if [ $links -gt 4 ]; then
+if [ $links -gt 1 ]; then
 echo $links download links found
 
 printf %s "$filelist" | while IFS= read -r url
@@ -408,14 +409,13 @@ rm -rf $tmp/*
 } done
 
 else
-#downloaded file list is to small
-echo downloaded file list is to small
+#only $links download links found
+echo only $links download links found
 emails=$(cat ../maintenance | sed '$aend of file')
 printf %s "$emails" | while IFS= read -r onemail
 do {
-python ../send-email.py "$onemail" "To Do List" "downloaded file list is to small: 
-$download 
-include $links links"
+python ../send-email.py "$onemail" "To Do List" "only $links download links found: 
+$download "
 } done
 fi
 
