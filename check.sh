@@ -284,7 +284,7 @@ if [ $? -eq 0 ]; then
 echo
 
 #detect change log
-wget -qO- "$changes" | grep -A99 "^$version  " | grep -m2 -B99 "\-\-\-\-\-" | head -n -4 > $tmp/change.log
+wget -qO- "$changes" | grep -A99 "^$version  " | grep -m2 -B99 "\-\-\-\-\-" | head -n -4 | tail -n +2 > $tmp/change.log
 
 #check if even something has been created
 if [ -f $tmp/change.log ]; then
@@ -345,6 +345,7 @@ python ../send-email.py "$onemail" "$name $version $bit" "$url
 $md5
 $sha1
 
+Change log:
 `cat $tmp/change.log`"
 } done
 echo
